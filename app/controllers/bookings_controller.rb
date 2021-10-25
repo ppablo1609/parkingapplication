@@ -12,7 +12,7 @@ class BookingsController < ApplicationController
 
   # GET /bookings/new
   def new
-    @booking = Booking.new
+    @booking = current_user.bookings.build
   end
 
   # GET /bookings/1/edit
@@ -21,8 +21,7 @@ class BookingsController < ApplicationController
 
   # POST /bookings or /bookings.json
   def create
-    # @booking = Booking.new(user_id: booking_params[:user_id], spot_id: booking_params[:spot_id])
-    @booking = Booking.new(booking_params)
+    @booking = current_user.bookings.build(booking_params)
 
     respond_to do |format|
       if @booking.save
@@ -50,7 +49,7 @@ class BookingsController < ApplicationController
 
   # DELETE /bookings/1 or /bookings/1.json
   def destroy
-    @bookings.destroy
+    @booking.destroy
     respond_to do |format|
       format.html { redirect_to bookings_url, notice: "Booking was successfully destroyed." }
       format.json { head :no_content }
@@ -65,6 +64,6 @@ class BookingsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def booking_params
-    params.require(:booking).permit(:user_id, :spot_id, :is_booked)
+    params.require(:booking).permit( :spot_id, :is_booked)
   end
 end

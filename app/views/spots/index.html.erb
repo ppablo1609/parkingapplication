@@ -14,7 +14,7 @@
     <% @spots.each do |spot| %>
       <tr>
         <td><%= spot.name %></td>
-        <td><%= link_to 'Booking', new_booking_path %></td>
+        <td><%= link_to 'Booking', new_spot_booking_path(spot) %></td>
       </tr>
     <% end %>
   </tbody>

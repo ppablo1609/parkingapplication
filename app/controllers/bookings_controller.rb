@@ -1,5 +1,6 @@
 class BookingsController < ApplicationController
-  before_action :set_booking, only: %i[ show edit update destroy ]
+  before_action :set_spot, only: [:new, :create, :index]
+  before_action :set_booking, only: %i[ show edit update destroy index ]
 
   # GET /bookings or /bookings.json
   def index
@@ -12,7 +13,9 @@ class BookingsController < ApplicationController
 
   # GET /bookings/new
   def new
-    @booking = current_user.bookings.build
+    @booking = @spot.bookings.new(:is_booked => true) do |b|
+      b.user = current_user
+    end
   end
 
   # GET /bookings/1/edit
@@ -21,8 +24,9 @@ class BookingsController < ApplicationController
 
   # POST /bookings or /bookings.json
   def create
-    @booking = current_user.bookings.build(booking_params)
-
+    @booking = @spot.bookings.new(booking_params) do |b|
+      b.user = current_user
+    end
     respond_to do |format|
       if @booking.save
         format.html { redirect_to @booking, notice: "Booking was successfully created." }
@@ -62,8 +66,12 @@ class BookingsController < ApplicationController
     @booking = Booking.find(params[:id])
   end
 
+  def set_spot
+    @spot = Spot.find(params[:spot_id])
+  end
+
   # Only allow a list of trusted parameters through.
   def booking_params
-    params.require(:booking).permit( :spot_id, :is_booked)
+    params.require(:booking).permit(:spot_id, :is_booked)
   end
 end
